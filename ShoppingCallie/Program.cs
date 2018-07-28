@@ -38,11 +38,10 @@ namespace ShoppingCallie
             Console.WriteLine("What would you like to buy?");
 
             // declaring a variable
-            string userInput = "";
             double basketTotal = 0.00;
             string newItem = "";
 
-            while (userInput != "1")
+            while (newItem != "1")
             {
                 newItem = Console.ReadLine().ToLower(); // converts string to lowercase
                 newItem = newItem.Substring(0).ToUpper()[0] + newItem.Substring(1); // converts first letter to uppercase
@@ -53,7 +52,7 @@ namespace ShoppingCallie
 
                 if (!itemLookup.ContainsKey(newItem))
                 {
-                    Console.WriteLine(newItem + " does not exist. Please try again. \nPress '1' to checkout");
+                    Console.WriteLine(newItem + " does not exist. Please try again or press '1' to checkout");
                     continue;
                 }
                 else
@@ -66,13 +65,37 @@ namespace ShoppingCallie
                 }
 
             }
-
             Console.WriteLine("Your basket contains: ");
             foreach (var basketItem in basket)
             {
                 Console.WriteLine(basketItem + " = £" + string.Format("{0:0.00}", itemLookup[basketItem]));
             }
-            Console.WriteLine("----------------- \nBasket total: £" + string.Format("{0:0.00}", basketTotal));
+            Console.WriteLine("----------------- \nBasket total: £" + string.Format("{0:0.00}", basketTotal + "\nPress '1' to add a discount or '2' to continue" ));
+
+            string userInput = Console.ReadLine();
+            string discountCode = "";
+
+            IDictionary<string, int > discountLookup = new Dictionary<string, int>();
+            discountLookup["shitisbananas"] = 20;
+            discountLookup["nodiscount4u"] = 0;
+            discountLookup["halfpriceplz"] = 50;
+
+            if (userInput == "1")
+            {
+                Console.WriteLine("Please enter your discount code:");
+                discountCode = Console.ReadLine().ToLower();
+
+                if (!discountLookup.ContainsKey(discountCode))
+                {
+                    Console.WriteLine("Invalid discount code. Please try again or press '2' to checkout");
+                    
+                }
+                else
+                {
+                }
+            }
+
+
 
             Console.ReadLine();
         }
