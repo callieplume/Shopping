@@ -10,7 +10,7 @@ namespace ShoppingCallie
             // creating a list
             List<string> basket = new List<string>();
 
-            IDictionary<string, double> itemLookup = new Dictionary<string, double>();
+            List<Item> itemLookup = new List<Item>();
             itemLookup = OpenStore();
 
             // declaring a variable
@@ -34,21 +34,31 @@ namespace ShoppingCallie
         /// Displays items in the store with prices. 
         /// </summary>
         /// <returns></returns>
-        static IDictionary<string, double> OpenStore()
+        static List<Item> OpenStore()
         {
-            // creating a dictionary
-            IDictionary<string, double> itemLookup = new Dictionary<string, double>();
-            itemLookup["Paint"] = 3.99;
-            itemLookup["Paper"] = 1.00;
-            itemLookup["Glitter"] = 2.50;
+            // creating a List
+            List<Item> itemLookup = new List<Item>();
+            Item paint = new Item("Paint", 3.99);
+            Item paper = new Item("Paper", 1.00);
+            Item glitter = new Item("Glitter", 2.50);
+
+            itemLookup.Add(paint);
+            itemLookup.Add(paper);
+            itemLookup.Add(glitter);
+
+            // not used - creating a dictionary
+            //IDictionary<string, double> itemLookup = new Dictionary<string, double>();
+            //itemLookup["Paint"] = 3.99;
+            //itemLookup["Paper"] = 1.00;
+            //itemLookup["Glitter"] = 2.50;
 
             Console.WriteLine("Welcome to Callies Crafts \n----------------- \nToday you can buy:");
             int counter = 1;
 
             // for each item in the dictionary, show the item and its value
-            foreach (KeyValuePair<string, double> item in itemLookup)
+            foreach (Item item in itemLookup)
             {
-                Console.WriteLine(counter + ". " + item.Key + " = £" + string.Format("{0:0.00}", item.Value));
+                Console.WriteLine(counter + ". " + item.name + " = £" + string.Format("{0:0.00}", item.price));
                 counter++;
             }
 
@@ -63,7 +73,7 @@ namespace ShoppingCallie
         /// <param name="basket">Stores user selected items</param>
         /// <param name="basketSubTotal">Total of current basket</param>
         /// <returns></returns>
-        static double AddToBasket(IDictionary<string, double> itemLookup, List<string> basket, double basketSubTotal)
+        static double AddToBasket(List<Item> itemLookup, List<string> basket, double basketSubTotal)
         {
             string newItem = "";
 
@@ -76,14 +86,25 @@ namespace ShoppingCallie
                     break;
                 }
 
-                if (!itemLookup.ContainsKey(newItem))
+                bool itemExists = false;
+
+                foreach (Item item in itemLookup)
+                {
+                    if (item.name == newItem)
+                    {
+                        itemExists = true;
+                    }
+                }
+
+                if (!itemExists)
                 {
                     Console.WriteLine(newItem + " does not exist. Please try again or press '1' to checkout");
                 }
                 else
                 {
                     basket.Add(newItem);
-                    basketSubTotal = basketSubTotal + itemLookup[newItem];
+                    double newItemPrice = itemLookup.Find(item => item.name == newItem).price;
+                    basketSubTotal = basketSubTotal + newItemPrice;
 
                     Console.WriteLine("-----------------\nAdded to basket: " + newItem + ". Add another item or press '1' to checkout");
                 }
@@ -97,12 +118,12 @@ namespace ShoppingCallie
         /// <param name="basket">Stores user selected items</param>
         /// <param name="basketSubTotal">Total of current basket</param>
         /// <param name="itemLookup">List of items</param>
-        static void ShowBasket(List<string> basket, double basketSubTotal, IDictionary<string, double> itemLookup)
+        static void ShowBasket(List<string> basket, double basketSubTotal, List<Item> itemLookup)
         {
             Console.WriteLine("-----------------\nYour basket contains: ");
             foreach (var basketItem in basket)
             {
-                Console.WriteLine(basketItem + " = £" + string.Format("{0:0.00}", itemLookup[basketItem]));
+                Console.WriteLine(basketItem + " = £" + string.Format("{0:0.00}", itemLookup.Find(item => item.name == basketItem).price));
             }
             Console.WriteLine("-----------------\nBasket subtotal: £" + string.Format("{0:0.00}", basketSubTotal) + "\n-----------------\nPress '1' to add a discount or '2' to continue");
         }
